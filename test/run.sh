@@ -31,4 +31,9 @@ if ! docker run --user "${user}" --rm --volume "${pwd}:${home}/scripts" --workdi
     exit 1
 fi
 
+if ! docker run --user "${user}" --rm --volume "${pwd}:${home}/scripts" --workdir "${home}/scripts" "${image}" groovy stdlib.groovy; then
+    echo "Groovy Standard Library (JSON/XML) verification failed" >&2
+    exit 1
+fi
+
 echo "All tests succeeded"
