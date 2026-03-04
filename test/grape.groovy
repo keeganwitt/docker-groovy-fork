@@ -4,6 +4,15 @@
 
 import org.apache.commons.lang3.*
 
+File safeCanonicalFile(File f) {
+    try {
+        return f.getCanonicalFile()
+    } catch (IOException ignore) {
+        // skip canonicalization then, it may not exist yet
+        return f
+    }
+}
+
 File getGroovyRoot() {
     String root = System.getProperty('groovy.root')
     def groovyRoot
@@ -12,12 +21,7 @@ File getGroovyRoot() {
     } else {
         groovyRoot = new File(root)
     }
-    try {
-        groovyRoot = groovyRoot.getCanonicalFile()
-    } catch (IOException ignore) {
-        // skip canonicalization then, it may not exist yet
-    }
-    groovyRoot
+    safeCanonicalFile(groovyRoot)
 }
 
 File getGrapeDir() {
@@ -25,13 +29,7 @@ File getGrapeDir() {
     if (root == null) {
         return getGroovyRoot()
     }
-    File grapeRoot = new File(root)
-    try {
-        grapeRoot = grapeRoot.getCanonicalFile()
-    } catch (IOException ignore) {
-        // skip canonicalization then, it may not exist yet
-    }
-    grapeRoot
+    safeCanonicalFile(new File(root))
 }
 
 File getGrapeCacheDir() {
